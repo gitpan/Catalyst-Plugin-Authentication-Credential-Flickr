@@ -13,11 +13,11 @@ SYNOPSIS
     
         MyApp->config(
             authentication => {
-                use_session => 1,
+                use_session => 1, # default 1
                 flickr      => {
                     key    => 'your api_key',
                     secret => 'your secret_key',
-                    perms  => 'read',
+                    perms  => 'read', # or write or delete
                 },
             },
         );
@@ -25,7 +25,7 @@ SYNOPSIS
         sub default : Private {
             my ( $self, $c ) = @_;
     
-            if ( $c->auth_restore_flickr ) {
+            if ( $c->user_exists ) {
                 # $c->user setted
             }
         }
@@ -51,7 +51,6 @@ EXTENDED METHODS
   setup
 METHODS
   authenticate_flickr_url
-  auth_restore_flickr
   authenticate_flickr
 AUTHOR
     Daisuke Murase <typester@cpan.org>

@@ -1,6 +1,6 @@
 ---
 name: Catalyst-Plugin-Authentication-Credential-Flickr
-version: 0.01_02
+version: 0.01_03
 author:
   - Daisuke Murase E<lt>typester@cpan.orgE<gt>
 abstract: Flickr authentication for Catalyst
@@ -15,5 +15,5 @@ requires:
 provides:
   Catalyst::Plugin::Authentication::Credential::Flickr:
     file: lib/Catalyst/Plugin/Authentication/Credential/Flickr.pm
-    version: 0.01_02
+    version: 0.01_03
 generated_by: Module::Build version 0.2703

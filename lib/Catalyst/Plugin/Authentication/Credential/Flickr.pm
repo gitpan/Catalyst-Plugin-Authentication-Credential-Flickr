@@ -5,7 +5,7 @@ use Flickr::API;
 use NEXT;
 use UNIVERSAL::require;
 
-our $VERSION = '0.01_02';
+our $VERSION = '0.01_03';
 
 =head1 NAME
 
@@ -23,11 +23,11 @@ Catalyst::Plugin::Authentication::Credential::Flickr - Flickr authentication for
     
     MyApp->config(
         authentication => {
-            use_session => 1,
+            use_session => 1, # default 1
             flickr      => {
                 key    => 'your api_key',
                 secret => 'your secret_key',
-                perms  => 'read',
+                perms  => 'read', # or write or delete
             },
         },
     );
@@ -35,7 +35,7 @@ Catalyst::Plugin::Authentication::Credential::Flickr - Flickr authentication for
     sub default : Private {
         my ( $self, $c ) = @_;
     
-        if ( $c->auth_restore_flickr ) {
+        if ( $c->user_exists ) {
             # $c->user setted
         }
     }
@@ -100,20 +100,6 @@ sub authenticate_flickr_url {
     return $config->{flickr_object}->request_auth_url($perms);
 }
 
-=head2 auth_restore_flickr
-
-=cut
-
-sub auth_restore_flickr {
-    my $c = shift;
-
-    if ( my $user = $c->auth_restore_user ) {
-        $c->user($user);
-        return 1;
-    }
-    return;
-}
-
 =head2 authenticate_flickr
 
 =cut
@@ -140,9 +126,17 @@ sub authenticate_flickr {
         $c->log->debug("Successfully authenticated user '$user->{username}'.")
             if $c->debug;
 
-        $user = $config->{user_class}->new($user);
-
-        $c->set_authenticated($user);
+        my $store = $config->{store} || $c->default_auth_store;
+        if ( $store
+            and my $store_user
+            = $store->get_user( $user->{username}, $user ) )
+        {
+            $c->set_authenticated($store_user);
+        }
+        else {
+            $user = $config->{user_class}->new($user);
+            $c->set_authenticated($user);
+        }
 
         return 1;
     }

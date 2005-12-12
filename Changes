@@ -1,5 +1,8 @@
 Revision history for Perl module Catalyst::Plugin::Authentication::Credential::Flickr
 
+0.01_03 2005-12-12T22:01:08+09:00
+    - fixed some bug. (thanks to nothingmuch)
+
 0.01_02 2005-12-12T15:33:58+09:00
     - separated auth_restore_flickr from authenticate_flickr.
 
