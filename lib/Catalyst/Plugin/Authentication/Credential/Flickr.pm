@@ -5,7 +5,7 @@ use Flickr::API;
 use NEXT;
 use UNIVERSAL::require;
 
-our $VERSION = '0.01_01';
+our $VERSION = '0.01_02';
 
 =head1 NAME
 
@@ -27,6 +27,7 @@ Catalyst::Plugin::Authentication::Credential::Flickr - Flickr authentication for
             flickr      => {
                 key    => 'your api_key',
                 secret => 'your secret_key',
+                perms  => 'read',
             },
         },
     );
@@ -34,7 +35,7 @@ Catalyst::Plugin::Authentication::Credential::Flickr - Flickr authentication for
     sub default : Private {
         my ( $self, $c ) = @_;
     
-        if ( $c->authenticate_flickr ) {
+        if ( $c->auth_restore_flickr ) {
             # $c->user setted
         }
     }
@@ -42,7 +43,7 @@ Catalyst::Plugin::Authentication::Credential::Flickr - Flickr authentication for
     # redirect flickr's login form
     sub login : Local {
         my ( $self, $c ) = @_;
-        $c->res->redirect( $c->authenticate_flickr_url('read') );
+        $c->res->redirect( $c->authenticate_flickr_url );
     }
     
     # login callback url
@@ -69,12 +70,11 @@ sub setup {
     my $config = $c->config->{authentication}->{flickr} ||= {};
 
     $config->{flickr_object} ||= do {
-        ( $config->{user_class} ||=
-              "Catalyst::Plugin::Authentication::User::Hash" )->require;
+        ( $config->{user_class}
+                ||= "Catalyst::Plugin::Authentication::User::Hash" )->require;
 
         my $flickr = Flickr::API->new(
-            {
-                key    => $config->{key},
+            {   key    => $config->{key},
                 secret => $config->{secret},
             }
         );
@@ -100,6 +100,20 @@ sub authenticate_flickr_url {
     return $config->{flickr_object}->request_auth_url($perms);
 }
 
+=head2 auth_restore_flickr
+
+=cut
+
+sub auth_restore_flickr {
+    my $c = shift;
+
+    if ( my $user = $c->auth_restore_user ) {
+        $c->user($user);
+        return 1;
+    }
+    return;
+}
+
 =head2 authenticate_flickr
 
 =cut
@@ -107,17 +121,12 @@ sub authenticate_flickr_url {
 sub authenticate_flickr {
     my $c = shift;
 
-    if ( my $user = $c->auth_restore_user ) {
-        $c->user($user);
-        return 1;
-    }
-
     my $config = $c->config->{authentication}->{flickr};
     my $flickr = $config->{flickr_object};
-    my $frob   = $c->req->params->{frob};
+    my $frob   = $c->req->params->{frob} or return;
 
-    my $api_response =
-      $flickr->execute_method( 'flickr.auth.getToken', { frob => $frob, } );
+    my $api_response = $flickr->execute_method( 'flickr.auth.getToken',
+        { frob => $frob, } );
 
     if ( $api_response->{success} ) {
         my $user    = {};
@@ -128,28 +137,23 @@ sub authenticate_flickr {
         ( $user->{username} ) = $content =~ m!username="(.*?)"!;
         ( $user->{fullname} ) = $content =~ m!fullname="(.*?)"!;
 
-        $c->log->debug(
-            "Successfully authenticated user '$user->{username}'.")
-          if $c->debug;
-
-        if ( my $store = $config->{auth_store} ) {
-            $store = $c->get_auth_store($store) unless ref $store;
-            $user = $store->get_user($user);
-        }
+        $c->log->debug("Successfully authenticated user '$user->{username}'.")
+            if $c->debug;
 
         $user = $config->{user_class}->new($user);
 
-        $c->set_authenticated( $user );
+        $c->set_authenticated($user);
 
         return 1;
     }
     else {
         $c->log->debug(
             sprintf
-              "Failed to authenticate flickr.  Error code: '%d', Reason: '%s'",
-            $api_response->{error_code}, $api_response->{error_message},
-          )
-          if $c->debug;
+                "Failed to authenticate flickr.  Error code: '%d', Reason: '%s'",
+            $api_response->{error_code},
+            $api_response->{error_message},
+            )
+            if $c->debug;
 
         return;
     }
