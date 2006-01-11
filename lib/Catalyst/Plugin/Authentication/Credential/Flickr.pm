@@ -5,7 +5,7 @@ use Flickr::API;
 use NEXT;
 use UNIVERSAL::require;
 
-our $VERSION = '0.01_03';
+our $VERSION = '0.02';
 
 =head1 NAME
 
@@ -56,7 +56,7 @@ Catalyst::Plugin::Authentication::Credential::Flickr - Flickr authentication for
 
 =head1 DESCRIPTION
 
-This module provide authentication via Flickr, useing it's api.
+This module provide authentication via Flickr, using it's api.
 
 =head1 EXTENDED METHODS
 

@@ -45,7 +45,7 @@ SYNOPSIS
         }
 
 DESCRIPTION
-    This module provide authentication via Flickr, useing it's api.
+    This module provide authentication via Flickr, using it's api.
 
 EXTENDED METHODS
   setup
