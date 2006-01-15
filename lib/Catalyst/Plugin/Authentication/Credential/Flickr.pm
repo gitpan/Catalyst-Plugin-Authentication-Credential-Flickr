@@ -5,7 +5,7 @@ use Flickr::API;
 use NEXT;
 use UNIVERSAL::require;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 =head1 NAME
 
@@ -23,11 +23,11 @@ Catalyst::Plugin::Authentication::Credential::Flickr - Flickr authentication for
     
     MyApp->config(
         authentication => {
-            use_session => 1, # default 1
+            use_session => 1, # default 1. see C::P::Authentication
             flickr      => {
                 key    => 'your api_key',
                 secret => 'your secret_key',
-                perms  => 'read', # or write or delete
+                perms  => 'read', # or write
             },
         },
     );
@@ -152,6 +152,10 @@ sub authenticate_flickr {
         return;
     }
 }
+
+=head1 SEE ALSO
+
+L<Catalyst::Plugin::Authentication>, L<Catalyst::Plugin::Authentication::Credential::TypeKey>
 
 =head1 AUTHOR
 

@@ -13,11 +13,11 @@ SYNOPSIS
     
         MyApp->config(
             authentication => {
-                use_session => 1, # default 1
+                use_session => 1, # default 1. see C::P::Authentication
                 flickr      => {
                     key    => 'your api_key',
                     secret => 'your secret_key',
-                    perms  => 'read', # or write or delete
+                    perms  => 'read', # or write
                 },
             },
         );
@@ -52,6 +52,10 @@ EXTENDED METHODS
 METHODS
   authenticate_flickr_url
   authenticate_flickr
+SEE ALSO
+    Catalyst::Plugin::Authentication,
+    Catalyst::Plugin::Authentication::Credential::TypeKey
+
 AUTHOR
     Daisuke Murase <typester@cpan.org>
 

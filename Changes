@@ -1,5 +1,9 @@
 Revision history for Perl module Catalyst::Plugin::Authentication::Credential::Flickr
 
+0.03 2006-01-15T16:48:56+09:00
+    - added pod test
+    - fixed doc
+
 0.02 2006-01-12T02:10:47+09:00
     - added basic test
 
