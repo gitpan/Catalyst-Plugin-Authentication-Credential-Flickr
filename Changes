@@ -1,5 +1,9 @@
 Revision history for Perl module Catalyst::Plugin::Authentication::Credential::Flickr
 
+0.04 2006-12-06T18:52:04+09:00
+    - fixed failing test with latest version of Test::MockObject
+      (Reported by Tatsuhiko Miyagawa)
+
 0.03 2006-01-15T16:48:56+09:00
     - added pod test
     - fixed doc

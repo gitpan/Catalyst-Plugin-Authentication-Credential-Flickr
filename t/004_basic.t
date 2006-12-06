@@ -53,6 +53,7 @@ $req->mock( params => sub {$params} );
 $c->mock( req                => sub {$req} );
 $c->mock( default_auth_store => sub { } );
 $c->mock( set_authenticated  => sub { } );
+$c->mock( debug => sub { 0 } );
 
 my $method;
 $flickr->mock( execute_method => sub { $method = $_[1]; $res } );
