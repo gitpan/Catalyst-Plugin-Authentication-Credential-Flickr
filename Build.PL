@@ -9,5 +9,6 @@ Module::Build->new(
         'Flickr::API'                      => 0,
         'Catalyst::Plugin::Authentication' => 0,
         'Catalyst::Plugin::Session'        => 0,
+        'UNIVERSAL::require'               => 0,
     },
 )->create_build_script;

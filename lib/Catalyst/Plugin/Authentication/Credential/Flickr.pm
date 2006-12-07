@@ -5,7 +5,7 @@ use Flickr::API;
 use NEXT;
 use UNIVERSAL::require;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 =head1 NAME
 
